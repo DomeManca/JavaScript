@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1><a href="2.html">Task Manager</a></h1>
+    <ul class="task-list" id="task-list"></ul>
+  </div>
+  <script src="task.js"></script>
+  <script>
+    const taskList = document.getElementById('task-list');
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      tasks.sort((a, b) => a.dueDate - b.dueDate).forEach((task, index) => {
+        const taskItem = document.createElement('li');
+        taskItem.classList.add('task-item');
+
+        const taskTitle = document.createElement('h2');
+        taskTitle.classList.add('task-title');
+        taskTitle.textContent = task.title;
+
+        const taskDesc = document.createElement('p');
+        taskDesc.classList.add('task-desc');
+        taskDesc.textContent = task.description ? task.description : 'No description';
+
+        const taskDueDate = document.createElement('div');
+        taskDueDate.classList.add('task-due-date');
+        taskDueDate.textContent = `Due Date: ${task.dueDate.toLocaleString()}`;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = 'X';
+        deleteButton.onclick = () => deleteTask(index);
+
+        taskItem.appendChild(taskTitle);
+        taskItem.appendChild(taskDesc);
+        taskItem.appendChild(taskDueDate);
+        taskItem.appendChild(deleteButton);
+
+        taskList.appendChild(taskItem);
+      });
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    renderTasks();
+  </script>
+</body>
+</html>
